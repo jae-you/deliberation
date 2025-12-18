@@ -2,103 +2,118 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# 페이지 설정
-st.set_page_config(page_title="모두의 AI 공론장", layout="wide", initial_sidebar_state="expanded")
+# 1. 페이지 설정 및 가독성 테마 적용
+st.set_page_config(page_title="모두의 AI 공론장", layout="wide")
 
-# UI 스타일링 (밝은 테마 및 친절한 디자인)
+# 배경색과 글자색의 충돌을 방지하는 커스텀 CSS
 st.markdown("""
     <style>
-    .main { background-color: #ffffff; }
-    .stTabs [data-baseweb="tab-list"] { gap: 30px; }
-    .stTabs [data-baseweb="tab"] { height: 60px; font-size: 18px; font-weight: 700; color: #5d6d7e; }
-    .info-card { background-color: #f8faff; padding: 20px; border-radius: 15px; border-left: 5px solid #3498db; }
+    /* 전체 배경은 흰색, 글자는 짙은 회색으로 고정 */
+    .stApp {
+        background-color: #FFFFFF;
+        color: #262730;
+    }
+    /* 정보 카드의 가독성 확보 */
+    .info-card {
+        background-color: #F0F4F8;
+        color: #1A1C20;
+        padding: 25px;
+        border-radius: 12px;
+        border-left: 6px solid #005BAA;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+    /* 탭 메뉴 글자 크기 및 색상 */
+    .stTabs [data-baseweb="tab"] {
+        font-size: 18px;
+        font-weight: 700;
+        color: #4A4A4A;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# 사이드바
+# 2. 사이드바 (기관명 제외)
 with st.sidebar:
     st.title("🌈 모두의 AI 공론장")
-    st.write("우리 삶의 변화를 함께 고민하고 답을 찾아가는 공간입니다.")
+    st.write("AI 시대를 함께 디자인하는 시민들의 공간입니다.")
     st.divider()
     
     current_issue = st.selectbox(
-        "현재 이야기 나누는 주제",
-        ["AI 업종 주 52시간제 특례 도입", "AI 학습데이터와 저작권 보호", "돌봄 로봇 도입의 가이드라인"]
+        "현재 진행 중인 숙의",
+        ["AI 산업 주 52시간제 특례 도입", "AI 학습데이터와 창작자 권리", "공공부문 AI 책임 가이드라인"]
     )
-    st.success("현재 '대안 찾기' 단계가 진행 중이에요!")
+    st.success("지금 '대안 조합' 단계가 한창이에요! 😊")
 
-# 메인 헤더
+# 3. 메인 화면 구성
 st.title(f"✨ {current_issue}")
-st.write("단순한 찬반을 넘어, 우리가 안심하고 기술을 누릴 수 있는 조건을 함께 고민합니다.")
 
-# 4단계 파이프라인 탭
-tab1, tab2, tab3, tab4 = st.tabs(["🔍 쟁점 들여다보기", "💬 함께 나누는 숙의", "🚀 실지로 해보기(실증)", "📂 우리들의 기록"])
+# 파이프라인을 시각적으로 보여주는 단계 안내
+st.markdown("""
+[제안] → [숙의] → [실증사업] → [정책화]
+""")
+
+# 탭 구성: 제안 -> 숙의 -> 실증 -> 정책화 (액션플랜 구조 반영)
+tab1, tab2, tab3, tab4 = st.tabs(["🔍 쟁점 정의", "💬 시민 숙의", "🚀 실증 실험", "📂 우리들의 기록"])
 
 # TAB 1: 쟁점 정의
 with tab1:
     st.subheader("이 문제는 왜 중요한가요?")
-    st.markdown("""
+    st.markdown(f"""
     <div class="info-card">
-    AI 기술이 빠르게 발전하면서 기존의 규칙으로는 담기 어려운 고민들이 생겨나고 있어요. 
+    AI 기술이 빠르게 발전하면서 기존의 규칙으로는 담기 어려운 고민들이 생겨나고 있어요. <br>
     성장과 안전, 효율과 권리 사이의 균형점을 찾는 과정입니다.
     </div>
     """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
-        st.info("💡 기회: 기술 경쟁력이 높아지고 복잡한 일처리가 빨라집니다.")
+        st.info("💡 **혁신과 기회**\n\n- 국가 기술 경쟁력 확보\n- 산업 전반의 효율성 증대")
     with col2:
-        st.warning("⚠️ 위험: 일과 휴식의 균형이 깨지거나 안전 사고가 걱정될 수 있습니다.")
+        st.warning("⚠️ **보호와 안전**\n\n- 노동자의 건강권 및 휴식권\n- 기술 오남용 방지 및 책임 소재")
 
-    st.subheader("서로 다른 생각들 (이해관계 지형도)")
-    st.image("https://via.placeholder.com/1000x300.png?text=Interactive+Stakeholder+Map+Graphic")
-
-# TAB 2: 숙의 참여
+# TAB 2: 시민 숙의 (조건부 합의 수집)
 with tab2:
-    col_input, col_graph = st.columns([4, 5])
+    st.subheader("나의 생각 보태기")
+    st.write("단순한 찬반을 넘어, 우리가 합의할 수 있는 '최소 조건'을 찾아주세요.")
     
-    with col_input:
-        st.subheader("나의 생각 보태기")
-        with st.form("input_form"):
-            pos = st.radio("나의 현재 입장은?", ["찬성해요", "반대해요", "더 고민이 필요해요"], horizontal=True)
+    col_in, col_viz = st.columns([4, 6])
+    with col_in:
+        with st.form("delib_form"):
+            pos = st.radio("나의 입장", ["찬성", "반대", "유보"], horizontal=True)
+            st.write("어떤 약속이 전제되어야 할까요?")
+            c1 = st.checkbox("연속 휴식 시간 의무화")
+            c2 = st.checkbox("성과에 대한 공정한 배분 체계")
+            c3 = st.checkbox("문제가 생겼을 때의 책임 주체 명시")
             
-            st.write("어떤 약속이 있다면 마음이 좀 더 놓일까요?")
-            c1 = st.checkbox("충분한 휴식 시간을 법으로 보장한다면")
-            c2 = st.checkbox("문제가 생겼을 때 책임질 주체가 명확하다면")
-            c3 = st.checkbox("작은 규모로 먼저 해보고 결과를 공개한다면")
-            
-            reasons = st.multiselect("중요하게 생각하는 가치", ["노동권", "안전", "혁신", "공정", "미래세대"])
-            opinion = st.text_area("구체적인 제안이나 경험이 있다면 적어주세요.")
-            
-            if st.form_submit_button("의견 소중히 전달하기"):
+            opinion = st.text_area("구체적인 제안을 적어주세요.")
+            if st.form_submit_button("의견 전달하기"):
                 st.balloons()
-                st.success("의견이 접수되었습니다! 분석 결과에 소중히 반영하겠습니다.")
+                st.success("소중한 의견이 리포트에 반영됩니다!")
 
-    with col_graph:
-        st.subheader("지금까지 모인 생각의 지도")
-        chart_data = pd.DataFrame({
-            "조건": ["휴식보장", "책임명확", "단계적시행"],
-            "공감도(%)": [82, 68, 91]
-        })
-        fig = px.bar(chart_data, x="조건", y="공감도(%)", color="공감도(%)", color_continuous_scale="Blues")
+    with col_viz:
+        st.write("현재까지 모인 숙의 현황 (AI 분석)")
+        df = pd.DataFrame({"항목": ["휴식보장", "배분체계", "책임명시"], "합의도": [85, 62, 94]})
+        fig = px.bar(df, x="항목", y="합의도", color="합의도", color_continuous_scale="Blues")
         st.plotly_chart(fig, use_container_width=True)
 
-# TAB 3: 실증 파이프라인
+# TAB 3: 실증 실험 (26년 4Q 목표)
 with tab3:
     st.subheader("행동으로 이어지는 실증 프로젝트")
-    st.write("공론 결과를 실제 현장에 적용하여 정책 실효성을 검증합니다.") 
+    st.write("숙의를 통해 도출된 해결책을 현장에서 직접 검증합니다.")
     
-    test_data = pd.DataFrame([
-        {"분야": "노동", "프로젝트 명": "AI 개발자 연속휴식제 효과 검증", "진행": "준비 중", "예산": "2천만원"},
-        {"분야": "창작", "프로젝트 명": "공정한 수익 배분 시스템 테스트", "진행": "의제 선정", "예산": "2천만원"},
-        {"분야": "공공", "프로젝트 명": "안전한 행정 AI 가이드 검증", "진행": "숙의 중", "예산": "2천만원"}
-    ])
-    st.dataframe(test_data, use_container_width=True)
+    
+    
+    st.table(pd.DataFrame([
+        {"분야": "노동", "실증 과제": "AI 개발자 유연근로 실험", "상태": "준비 중"},
+        {"분야": "저작권", "실증 과제": "학습데이터 수익배분 모델", "상태": "참여 모집"},
+        {"분야": "복지", "실증 과제": "돌봄 로봇 현장 프로토콜 적용", "상태": "의제 선정"}
+    ]))
 
-# TAB 4: 정책 아카이브
+# TAB 4: 우리들의 기록 (정책 반영 아카이브)
 with tab4:
-    st.subheader("우리가 만든 변화의 기록")
-    with st.expander("📂 [완료] 학교 현장 AI 활용 가이드라인 결과"):
-        st.info("최종 결과: 조건부 수용 (교사와 학생의 동의 절차 필수)")
-        st.write("- 참여 인원: 5,420명")
-        st.write("- 정책 반영: 관련 지침 제5조에 숙의 결과 명문화 완료")
+    st.subheader("정책 반영 및 환류")
+    with st.expander("📂 완료된 공론장 결과 보기"):
+        st.markdown("### 주제: 학교 AI 도구 도입 가이드라인")
+        st.write("- **최종 합의**: 학생/교사 동의 절차 필수화 (조건부 수용)")
+        st.write("- **결과**: 관련 지침 제5조 개정안에 반영 완료")
+        st.success("정부 수용률: 85% (부분 수용 포함)")
